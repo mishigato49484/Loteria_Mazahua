@@ -1,0 +1,1722 @@
+---
+import "../styles/global.css";
+
+const BASE_PATH = import.meta.env.BASE_URL.endsWith("/")
+  ? import.meta.env.BASE_URL
+  : `${import.meta.env.BASE_URL}/`;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Catálogo de tarjetas de la Lotería Interactiva Mazahua." />
+    <meta name="theme-color" content="#eee7ff" />
+    <title>Catálogo | Lotería Mazahua</title>
+
+    <style is:global>
+      :root {
+        --lavanda: #eee7ff;
+        --morado: #8862dc;
+        --morado-oscuro: #6543b5;
+        --rosa: #ffdce8;
+        --rosa-fuerte: #f47ca8;
+        --menta: #e4f8e4;
+        --verde: #269354;
+        --azul: #e2f5ff;
+        --texto: #354777;
+        --blanco: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        min-height: 100%;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+        color: var(--texto);
+        background:
+          radial-gradient(ellipse at 10% 25%, #fff5d7 0, transparent 35%),
+          radial-gradient(ellipse at 95% 45%, #e2f5ff 0, transparent 30%),
+          #fffaf2;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .pagina {
+        width: min(1500px, 100%);
+        margin: 0 auto;
+        padding: 0 22px 18px;
+      }
+
+      /* ENCABEZADO */
+
+      .encabezado {
+        position: relative;
+        overflow: hidden;
+        margin: 0 -22px 20px;
+        padding: 20px 24px 25px;
+        text-align: center;
+        background: linear-gradient(120deg, #e0d5ff, #fff0f8 48%, #dff8f4);
+        border-radius: 0 0 48% 5%;
+      }
+
+      .encabezado::after {
+        content: "";
+        position: absolute;
+        bottom: -18px;
+        left: -5%;
+        width: 110%;
+        height: 30px;
+        background: #fffaf2;
+        border-radius: 50% 50% 0 0;
+      }
+
+      .encabezado-interior {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(12px, 3vw, 40px);
+      }
+
+      .adorno-encabezado {
+        font-size: clamp(2.5rem, 5vw, 5rem);
+        line-height: 1;
+        filter: drop-shadow(0 5px 3px #b8a3d444);
+      }
+
+      .sobretitulo {
+        margin: 0 0 4px;
+        color: #7653c7;
+        font-size: clamp(0.7rem, 1.4vw, 1rem);
+        font-weight: 900;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+      }
+
+      .titulo-principal {
+        margin: 0;
+        font-size: clamp(2rem, 4.7vw, 4.5rem);
+        font-weight: 1000;
+        line-height: 1.04;
+        letter-spacing: -0.04em;
+        color: #7951cb;
+        text-shadow: 2px 3px 0 #fff, 4px 5px 0 #c8b5ed;
+      }
+
+      .titulo-principal .rosa {
+        color: #ef719f;
+      }
+
+      .titulo-principal .verde {
+        color: #28a88b;
+      }
+
+      .subtitulo {
+        margin: 10px 0 0;
+        font-size: clamp(0.85rem, 1.6vw, 1.25rem);
+        font-weight: 700;
+        color: #536a9d;
+      }
+
+      /* MENÚ */
+
+      .navegacion-secciones {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 0 auto 25px;
+        padding: 10px;
+      }
+
+      .navegacion-secciones a {
+        padding: 11px 22px;
+        color: #7147a8;
+        background: #fff;
+        border: 2px solid #eadcf7;
+        border-radius: 999px;
+        font-weight: 900;
+        text-decoration: none;
+        box-shadow: 0 5px 0 #eee6fa;
+        transition: 0.2s;
+      }
+
+      .navegacion-secciones a:hover {
+        background: #f7efff;
+        transform: translateY(-2px);
+      }
+
+      .navegacion-secciones a.activo {
+        color: #fff;
+        background: #8862dc;
+        border-color: #8862dc;
+        box-shadow: 0 5px 0 #d6c7f5;
+      }
+
+      /* INTRODUCCIÓN */
+
+      .introduccion {
+        margin: 20px auto 28px;
+        text-align: center;
+      }
+
+      .introduccion .etiqueta {
+        color: #e36e9c;
+        font-size: 0.8rem;
+        font-weight: 1000;
+        letter-spacing: 0.15em;
+      }
+
+      .introduccion h2 {
+        margin: 8px 0;
+        color: #7653bd;
+        font-size: clamp(1.8rem, 4vw, 2.7rem);
+        font-weight: 1000;
+      }
+
+      .introduccion p {
+        max-width: 650px;
+        margin: auto;
+        color: #65749a;
+        line-height: 1.7;
+      }
+
+      /* BUSCADOR */
+
+      .herramientas {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin: 25px 0 18px;
+      }
+
+      .busqueda {
+        display: flex;
+        flex: 1;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        padding: 14px 18px;
+        background: #fff;
+        border: 2px solid #e6dcfa;
+        border-radius: 17px;
+        box-shadow: 0 5px 15px #604c8a0c;
+      }
+
+      .busqueda span {
+        color: #9873d1;
+        font-size: 1.5rem;
+      }
+
+      .busqueda input {
+        width: 100%;
+        min-width: 0;
+        padding: 3px;
+        color: #354777;
+        background: transparent;
+        border: none;
+        outline: none;
+      }
+
+      .busqueda input::placeholder {
+        color: #a59bb3;
+      }
+
+      .boton-nuevo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 15px 21px;
+        color: #fff;
+        background: linear-gradient(135deg, #b18af4, #8058d0);
+        border: 0;
+        border-radius: 16px;
+        box-shadow: 0 5px 0 #d9c9f5;
+        font-weight: 1000;
+        transition: 0.2s;
+      }
+
+      .boton-nuevo:hover {
+        transform: translateY(-3px);
+        filter: brightness(1.05);
+      }
+
+      .boton-nuevo span {
+        font-size: 1.3rem;
+      }
+
+      /* RESUMEN */
+
+      .resumen {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 18px 0;
+        padding: 14px 18px;
+        background: #fff;
+        border: 2px solid #e9e0f7;
+        border-radius: 17px;
+      }
+
+      .resumen-informacion {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .resumen-icono {
+        display: grid;
+        place-items: center;
+        width: 43px;
+        height: 43px;
+        background: #eee7ff;
+        border-radius: 13px;
+        font-size: 1.35rem;
+      }
+
+      .resumen-texto {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .resumen-texto strong {
+        color: #6946a7;
+        font-size: 0.95rem;
+      }
+
+      .resumen-texto span {
+        color: #8a829b;
+        font-size: 0.76rem;
+      }
+
+      .estado-catalogo {
+        color: #29945f;
+        font-size: 0.8rem;
+        font-weight: 900;
+      }
+
+      .estado-catalogo.error {
+        color: #cf5878;
+      }
+
+      .mensaje {
+        min-height: 22px;
+        margin: 12px 2px;
+        color: #827494;
+        font-size: 0.84rem;
+      }
+
+      .mensaje.correcto {
+        color: #248b5a;
+      }
+
+      .mensaje.error {
+        color: #c64f70;
+      }
+
+      /* FORMULARIO */
+
+      .formulario-contenedor {
+        max-width: 780px;
+        margin: 25px auto 30px;
+        padding: clamp(18px, 3vw, 30px);
+        background: #fff;
+        border: 3px solid #e7dcf8;
+        border-radius: 25px;
+        box-shadow: 0 8px 0 #eee6fa, 0 15px 30px #604c8a10;
+      }
+
+      .formulario-contenedor[hidden] {
+        display: none;
+      }
+
+      .formulario-cabecera {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        margin-bottom: 22px;
+      }
+
+      .formulario-cabecera .etiqueta {
+        color: #e36e9c;
+        font-size: 0.7rem;
+        font-weight: 1000;
+        letter-spacing: 0.15em;
+      }
+
+      .formulario-cabecera h2 {
+        margin: 6px 0;
+        color: #7653bd;
+        font-size: 1.65rem;
+      }
+
+      .formulario-cabecera p {
+        margin: 0;
+        color: #8a829b;
+        font-size: 0.85rem;
+      }
+
+      .cerrar {
+        width: 38px;
+        height: 38px;
+        flex-shrink: 0;
+        color: #9c5c83;
+        background: #ffeaf1;
+        border: 0;
+        border-radius: 12px;
+        font-size: 1.1rem;
+      }
+
+      .campos-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 17px;
+      }
+
+      .campo {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .campo-completo {
+        grid-column: 1 / -1;
+      }
+
+      .campo label {
+        color: #655185;
+        font-size: 0.84rem;
+        font-weight: 900;
+      }
+
+      .campo input,
+      .campo textarea {
+        width: 100%;
+        padding: 13px 14px;
+        color: #354777;
+        background: #fbf9ff;
+        border: 2px solid #e9e0f5;
+        border-radius: 12px;
+        outline: none;
+      }
+
+      .campo input:focus,
+      .campo textarea:focus {
+        border-color: #a88ae0;
+        box-shadow: 0 0 0 3px #a88ae01c;
+      }
+
+      .campo input:read-only {
+        color: #897c9e;
+        background: #f2eff5;
+      }
+
+      .nota-formulario {
+        margin: 17px 0;
+        padding: 12px;
+        color: #63749a;
+        background: #eff8ff;
+        border-radius: 12px;
+        font-size: 0.78rem;
+        line-height: 1.5;
+      }
+
+      .acciones-formulario {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .boton-guardar,
+      .boton-cancelar {
+        padding: 13px 22px;
+        border: 0;
+        border-radius: 13px;
+        font-weight: 900;
+      }
+
+      .boton-guardar {
+        color: #fff;
+        background: #8058d0;
+        box-shadow: 0 4px 0 #d9c9f5;
+      }
+
+      .boton-cancelar {
+        color: #7653a2;
+        background: #f1ebfa;
+      }
+
+      .boton-guardar:disabled {
+        opacity: 0.6;
+        cursor: wait;
+      }
+
+      /* REJILLA DE TARJETAS */
+
+      .rejilla-tarjetas {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        align-items: stretch;
+        gap: 25px;
+        margin-top: 28px;
+      }
+
+      /* RECUADRO EXTERIOR DE CADA TARJETA */
+
+      .tarjeta {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        padding: 12px;
+        overflow: hidden;
+        background: #ffffff;
+        border: 3px solid #d9c9f3;
+        border-radius: 25px;
+        box-shadow:
+          0 5px 0 #cfc0e9,
+          0 10px 22px rgba(101, 67, 181, 0.12);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      .tarjeta:hover {
+        transform: translateY(-4px);
+        box-shadow:
+          0 7px 0 #cfc0e9,
+          0 15px 25px rgba(101, 67, 181, 0.18);
+      }
+
+      /* RECUADRO INTERIOR DE LA IMAGEN */
+
+      .imagen-tarjeta {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 210px;
+        margin: 0;
+        padding: 12px;
+        overflow: hidden;
+        background: #f2edff;
+        border: 2px solid #e3d8f8;
+        border-radius: 17px;
+      }
+
+      .imagen-tarjeta img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform 0.3s ease;
+      }
+
+      .tarjeta:hover .imagen-tarjeta img {
+        transform: scale(1.04);
+      }
+
+      .sin-imagen {
+        color: #a58bce;
+        font-size: 4rem;
+      }
+
+      .numero-tarjeta {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1;
+        padding: 7px 12px;
+        color: #7653b9;
+        background: #ffffffed;
+        border: 1px solid #e6dcf8;
+        border-radius: 30px;
+        font-size: 0.68rem;
+        font-weight: 1000;
+      }
+
+      /* RECUADRO INTERIOR DE LA INFORMACIÓN */
+
+      .contenido-tarjeta {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 12px;
+        min-width: 0;
+        margin-top: 12px;
+        padding: 15px;
+        background: #fffafd;
+        border: 2px solid #f1e5f2;
+        border-radius: 17px;
+      }
+
+      .codigo-contenedor {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        padding: 9px 11px;
+        background: #f7f3ff;
+        border: 1px solid #eee6fa;
+        border-radius: 11px;
+      }
+
+      .codigo-etiqueta {
+        color: #a08bbd;
+        font-size: 0.65rem;
+        font-weight: 1000;
+        letter-spacing: 0.1em;
+      }
+
+      .codigo {
+        color: #795da9;
+        font-size: 0.75rem;
+        font-weight: 900;
+        overflow-wrap: anywhere;
+      }
+
+      .nombre-espanol {
+        margin: 0;
+        color: #7653bd;
+        font-size: 1.5rem;
+        font-weight: 1000;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+      }
+
+      .bloque-mazahua {
+        padding: 13px;
+        background: linear-gradient(120deg, #e8f8ed, #f0fbf2);
+        border: 1px solid #d5efdc;
+        border-radius: 14px;
+      }
+
+      .etiqueta-mazahua {
+        display: block;
+        margin-bottom: 5px;
+        color: #549675;
+        font-size: 0.65rem;
+        font-weight: 1000;
+        letter-spacing: 0.12em;
+      }
+
+      .nombre-mazahua {
+        margin: 0;
+        color: #23844e;
+        font-size: 1.35rem;
+        font-weight: 1000;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+      }
+
+      .informacion-extra {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+      }
+
+      .dato-tarjeta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding-bottom: 8px;
+        border-bottom: 1px dashed #e9e0f3;
+        font-size: 0.76rem;
+      }
+
+      .dato-tarjeta span {
+        color: #9286a5;
+        font-weight: 700;
+      }
+
+      .dato-tarjeta strong {
+        color: #655185;
+        text-align: right;
+        overflow-wrap: anywhere;
+      }
+
+      .categoria {
+        display: inline-flex;
+        align-self: flex-start;
+        padding: 7px 12px;
+        color: #43896f;
+        background: #e4f8e9;
+        border: 1px solid #d1eedb;
+        border-radius: 30px;
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      /* REPRODUCTOR DE AUDIO */
+
+      .bloque-audio {
+        padding: 11px;
+        background: #fff4f8;
+        border: 1px solid #f8dce8;
+        border-radius: 13px;
+      }
+
+      .titulo-audio {
+        display: block;
+        margin-bottom: 8px;
+        color: #bd6488;
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .reproductor audio {
+        display: block;
+        width: 100%;
+        height: 38px;
+      }
+
+      .sin-audio {
+        margin: 0;
+        padding: 10px;
+        color: #a397ad;
+        background: #faf7fc;
+        border-radius: 10px;
+        font-size: 0.76rem;
+      }
+
+      /* BOTONES DE ADMINISTRACIÓN */
+
+      .acciones-tarjeta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+        margin-top: auto;
+        padding-top: 7px;
+      }
+
+      .acciones-tarjeta button {
+        min-width: 0;
+        padding: 12px 6px;
+        border: 0;
+        border-radius: 12px;
+        font-size: 0.78rem;
+        font-weight: 900;
+        transition: transform 0.2s, filter 0.2s;
+      }
+
+      .editar {
+        color: #6543b5;
+        background: #eee7ff;
+      }
+
+      .eliminar {
+        color: #c54f7d;
+        background: #ffdce8;
+      }
+
+      .acciones-tarjeta button:hover {
+        transform: translateY(-2px);
+        filter: brightness(0.97);
+      }
+
+      /* SIN RESULTADOS */
+
+      .vacio {
+        grid-column: 1 / -1;
+        padding: 55px 15px;
+        text-align: center;
+        background: #fff;
+        border: 2px dashed #dfd2f0;
+        border-radius: 22px;
+      }
+
+      .vacio span {
+        font-size: 3rem;
+      }
+
+      .vacio h3 {
+        color: #7653bd;
+      }
+
+      .vacio p {
+        color: #8b829b;
+      }
+
+      /* PIE DE PÁGINA */
+
+      .pie {
+        margin-top: 45px;
+        padding: 23px 12px;
+        color: #7554bd;
+        text-align: center;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      .pie span {
+        color: #f276a6;
+      }
+
+      /* TABLET */
+
+      @media (max-width: 1100px) {
+        .rejilla-tarjetas {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      /* PANTALLAS MEDIANAS */
+
+      @media (max-width: 760px) {
+        .pagina {
+          padding-right: 16px;
+          padding-left: 16px;
+        }
+
+        .encabezado {
+          margin-right: -16px;
+          margin-left: -16px;
+        }
+
+        .rejilla-tarjetas {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 14px;
+        }
+
+        .tarjeta {
+          padding: 10px;
+        }
+
+        .imagen-tarjeta {
+          height: 180px;
+        }
+
+        .contenido-tarjeta {
+          padding: 13px;
+        }
+      }
+
+      /* CELULARES */
+
+      @media (max-width: 520px) {
+        .pagina {
+          padding: 0 12px 14px;
+        }
+
+        .encabezado {
+          margin: 0 -12px 15px;
+          padding: 22px 12px 25px;
+          border-radius: 0 0 30px 30px;
+        }
+
+        .encabezado-interior {
+          gap: 8px;
+        }
+
+        .adorno-encabezado {
+          font-size: 2.1rem;
+        }
+
+        .titulo-principal {
+          font-size: clamp(1.65rem, 7vw, 2.5rem);
+        }
+
+        .sobretitulo {
+          font-size: 0.62rem;
+          letter-spacing: 0.1em;
+        }
+
+        .subtitulo {
+          font-size: 0.8rem;
+        }
+
+        .navegacion-secciones {
+          gap: 7px;
+          padding: 6px 0;
+        }
+
+        .navegacion-secciones a {
+          padding: 10px 14px;
+          font-size: 0.83rem;
+        }
+
+        .herramientas {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .boton-nuevo {
+          width: 100%;
+        }
+
+        .rejilla-tarjetas {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+
+        .tarjeta {
+          padding: 8px;
+          border-radius: 19px;
+        }
+
+        .imagen-tarjeta {
+          height: 145px;
+          padding: 8px;
+          border-radius: 13px;
+        }
+
+        .contenido-tarjeta {
+          gap: 9px;
+          margin-top: 9px;
+          padding: 10px;
+          border-radius: 13px;
+        }
+
+        .nombre-espanol {
+          font-size: 1.12rem;
+        }
+
+        .nombre-mazahua {
+          font-size: 1.08rem;
+        }
+
+        .codigo {
+          font-size: 0.65rem;
+        }
+
+        .acciones-tarjeta {
+          grid-template-columns: 1fr;
+        }
+
+        .acciones-tarjeta button {
+          padding: 10px 4px;
+        }
+
+        .campos-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .campo-completo {
+          grid-column: auto;
+        }
+
+        .formulario-contenedor {
+          padding: 17px;
+        }
+
+        .resumen {
+          align-items: flex-start;
+        }
+
+        .estado-catalogo {
+          width: 100%;
+          padding-left: 55px;
+        }
+      }
+
+      @media (max-width: 350px) {
+        .rejilla-tarjetas {
+          grid-template-columns: 1fr;
+        }
+
+        .imagen-tarjeta {
+          height: 200px;
+        }
+
+        .acciones-tarjeta {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="pagina">
+
+      <!-- ENCABEZADO -->
+
+      <header class="encabezado">
+        <div class="encabezado-interior">
+          <span class="adorno-encabezado" aria-hidden="true">🐦</span>
+
+          <div>
+            <p class="sobretitulo">¡Aprendemos jugando!</p>
+
+            <h1 class="titulo-principal">
+              <span class="rosa">Lotería</span>
+              <span class="verde">Mazahua</span>
+            </h1>
+
+            <p class="subtitulo">
+              Aprende palabras en mazahua y español
+            </p>
+          </div>
+
+          <span class="adorno-encabezado" aria-hidden="true">🌽</span>
+        </div>
+      </header>
+
+      <!-- MENÚ -->
+
+      <nav class="navegacion-secciones" aria-label="Navegación principal">
+  <a href={BASE_PATH}>Inicio</a>
+  <a href={`${BASE_PATH}catalogo/`}>Catálogo</a>
+  <a href={`${BASE_PATH}jugar/`}>Jugar</a>
+  <a href={`${BASE_PATH}videos/`}>Videos</a>
+</nav>
+      <main>
+
+        <!-- INTRODUCCIÓN -->
+
+        <section class="introduccion">
+          <span class="etiqueta">🌺 NUESTRA LENGUA, NUESTRA CULTURA 🌺</span>
+          <h2>¡Explora nuestro catálogo!</h2>
+          <p>
+            Descubre las palabras en mazahua y español a través de imágenes
+            y sonidos. Cada tarjeta nos ayuda a mantener viva nuestra lengua.
+          </p>
+        </section>
+
+        <!-- BUSCADOR -->
+
+        <section class="herramientas">
+          <div class="busqueda">
+            <span aria-hidden="true">⌕</span>
+            <input
+              type="search"
+              id="busqueda"
+              placeholder="Buscar palabra, traducción o código RFID..."
+              aria-label="Buscar tarjetas"
+            />
+          </div>
+
+          <button id="nueva-tarjeta" class="boton-nuevo" type="button">
+            <span>＋</span> Agregar tarjeta
+          </button>
+        </section>
+
+        <!-- RESUMEN -->
+
+        <section class="resumen">
+          <div class="resumen-informacion">
+            <div class="resumen-icono">📚</div>
+
+            <div class="resumen-texto">
+              <strong id="total-tarjetas">Cargando tarjetas...</strong>
+              <span>Palabras disponibles en el catálogo</span>
+            </div>
+          </div>
+
+          <span id="estado-catalogo" class="estado-catalogo">
+            ● Conectando
+          </span>
+        </section>
+
+        <p id="mensaje" class="mensaje" role="status" aria-live="polite">
+          Conectando con el servidor...
+        </p>
+
+        <!-- FORMULARIO DE REGISTRO Y EDICIÓN -->
+
+        <section
+          id="formulario-contenedor"
+          class="formulario-contenedor"
+          hidden
+        >
+          <div class="formulario-cabecera">
+            <div>
+              <span class="etiqueta">ADMINISTRACIÓN DE TARJETAS</span>
+              <h2 id="titulo-formulario">Registrar tarjeta</h2>
+              <p>Completa los datos de la palabra que deseas guardar.</p>
+            </div>
+
+            <button
+              id="cerrar-formulario"
+              class="cerrar"
+              type="button"
+              aria-label="Cerrar formulario"
+            >
+              ✕
+            </button>
+          </div>
+
+          <form id="formulario-tarjeta">
+            <input type="hidden" id="modo" value="crear" />
+
+            <div class="campos-grid">
+
+              <div class="campo">
+                <label for="codigo">Código RFID</label>
+                <input
+                  id="codigo"
+                  type="text"
+                  maxlength="8"
+                  required
+                  placeholder="Ej. 6BBBD07E"
+                />
+              </div>
+
+              <div class="campo">
+                <label for="id_categoria">ID de categoría</label>
+                <input
+                  id="id_categoria"
+                  type="number"
+                  min="1"
+                  value="1"
+                  required
+                />
+              </div>
+
+              <div class="campo">
+                <label for="espanol">Palabra en español</label>
+                <input
+                  id="espanol"
+                  type="text"
+                  required
+                  placeholder="Ej. Manzana"
+                />
+              </div>
+
+              <div class="campo">
+                <label for="mazahua">Palabra en mazahua</label>
+                <input
+                  id="mazahua"
+                  type="text"
+                  required
+                  placeholder="Ej. IXI"
+                />
+              </div>
+
+              <div class="campo campo-completo">
+                <label for="descripcion">Descripción</label>
+                <textarea
+                  id="descripcion"
+                  rows="3"
+                  placeholder="Escribe una descripción de la tarjeta..."
+                ></textarea>
+              </div>
+
+            </div>
+
+            <p class="nota-formulario">
+              ℹ️ Las imágenes y los audios asociados se conservan en el
+              backend. Este formulario administra los datos de la tarjeta.
+            </p>
+
+            <div class="acciones-formulario">
+              <button type="submit" class="boton-guardar" id="guardar">
+                Guardar tarjeta
+              </button>
+
+              <button
+                type="button"
+                id="cancelar"
+                class="boton-cancelar"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- CATÁLOGO DE TARJETAS -->
+
+        <section
+          id="contenedor-tarjetas"
+          class="rejilla-tarjetas"
+          aria-label="Tarjetas del catálogo"
+        ></section>
+
+      </main>
+
+      <!-- PIE DE PÁGINA -->
+
+      <footer class="pie">
+        🌺 Preservar nuestra lengua es mantener viva nuestra cultura.
+        <br />
+        <span>♥</span> LOTERÍA INTERACTIVA MAZAHUA <span>♥</span>
+      </footer>
+
+    </div>
+
+    <!-- FUNCIONALIDAD -->
+
+    <script>
+      interface Tarjeta {
+        id_tarjeta: number;
+        codigo: string;
+        espanol: string;
+        mazahua: string;
+        descripcion?: string | null;
+        categoria?: string | null;
+        id_categoria?: number;
+        imagen?: string | null;
+        audio?: string | null;
+      }
+
+      const API_BASE = "https://loteria-mazahua-backend-2026.onrender.com";
+
+      const ENDPOINT = `${API_BASE}/api/admin/tarjetas/`;
+
+      const contenedor =
+        document.querySelector("#contenedor-tarjetas") as HTMLElement;
+
+      const mensaje =
+        document.querySelector("#mensaje") as HTMLElement;
+
+      const busqueda =
+        document.querySelector("#busqueda") as HTMLInputElement;
+
+      const formularioContenedor =
+        document.querySelector("#formulario-contenedor") as HTMLElement;
+
+      const formulario =
+        document.querySelector("#formulario-tarjeta") as HTMLFormElement;
+
+      const campoCodigo =
+        document.querySelector("#codigo") as HTMLInputElement;
+
+      const campoEspanol =
+        document.querySelector("#espanol") as HTMLInputElement;
+
+      const campoMazahua =
+        document.querySelector("#mazahua") as HTMLInputElement;
+
+      const campoDescripcion =
+        document.querySelector("#descripcion") as HTMLTextAreaElement;
+
+      const campoCategoria =
+        document.querySelector("#id_categoria") as HTMLInputElement;
+
+      const campoModo =
+        document.querySelector("#modo") as HTMLInputElement;
+
+      const tituloFormulario =
+        document.querySelector("#titulo-formulario") as HTMLElement;
+
+      const totalTarjetas =
+        document.querySelector("#total-tarjetas") as HTMLElement;
+
+      const estadoCatalogo =
+        document.querySelector("#estado-catalogo") as HTMLElement;
+
+      const botonGuardar =
+        document.querySelector("#guardar") as HTMLButtonElement;
+
+      let tarjetas: Tarjeta[] = [];
+
+      /* PROTEGER LOS TEXTOS MOSTRADOS EN HTML */
+
+      function escapar(valor: unknown): string {
+        return String(valor ?? "").replace(/[&<>"']/g, (caracter) => {
+          const entidades: Record<string, string> = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          };
+
+          return entidades[caracter];
+        });
+      }
+
+      /* DIRECCIONES DE IMÁGENES Y AUDIOS */
+
+      function urlMultimedia(
+        ruta: string | null | undefined
+      ): string {
+        if (!ruta) return "";
+
+        if (
+          ruta.startsWith("http://") ||
+          ruta.startsWith("https://")
+        ) {
+          return ruta;
+        }
+
+        return `${API_BASE}${ruta.startsWith("/") ? "" : "/"}${ruta}`;
+      }
+
+      /* MENSAJES */
+
+      function mostrarMensaje(texto: string, tipo = "") {
+        mensaje.textContent = texto;
+        mensaje.className = `mensaje ${tipo}`;
+      }
+
+      /* CARGAR TARJETAS DESDE FASTAPI */
+
+      async function cargarTarjetas() {
+        mostrarMensaje("Cargando tarjetas...");
+
+        estadoCatalogo.textContent = "● Conectando";
+        estadoCatalogo.className = "estado-catalogo";
+
+        try {
+          const respuesta = await fetch(ENDPOINT);
+
+          if (!respuesta.ok) {
+            throw new Error(`Error del servidor: ${respuesta.status}`);
+          }
+
+          const datos = await respuesta.json();
+
+          if (!Array.isArray(datos)) {
+            throw new Error("La respuesta del servidor no es una lista.");
+          }
+
+          tarjetas = datos;
+
+          estadoCatalogo.textContent = "● Conectado";
+          estadoCatalogo.className = "estado-catalogo";
+
+          mostrarTarjetas();
+
+          mostrarMensaje(
+            "El catálogo se actualizó correctamente.",
+            "correcto"
+          );
+
+        } catch (error) {
+          console.error(error);
+
+          estadoCatalogo.textContent = "● Sin conexión";
+          estadoCatalogo.className = "estado-catalogo error";
+
+          mostrarMensaje(
+            "No se pudo conectar con FastAPI. Verifica que el backend esté ejecutándose.",
+            "error"
+          );
+
+          contenedor.innerHTML = `
+            <div class="vacio">
+              <span>📡</span>
+              <h3>No se pudo cargar el catálogo</h3>
+              <p>Comprueba que FastAPI esté funcionando e intenta actualizar la página.</p>
+            </div>
+          `;
+
+          totalTarjetas.textContent = "No disponible";
+        }
+      }
+
+      /* MOSTRAR TARJETAS */
+
+      function mostrarTarjetas() {
+        const texto = busqueda.value.trim().toLowerCase();
+
+        const filtradas = tarjetas.filter((tarjeta) => {
+          return [
+            tarjeta.espanol,
+            tarjeta.mazahua,
+            tarjeta.codigo,
+            tarjeta.categoria
+          ].some((valor) =>
+            String(valor ?? "").toLowerCase().includes(texto)
+          );
+        });
+
+        totalTarjetas.textContent =
+          `${filtradas.length} de ${tarjetas.length} tarjetas`;
+
+        if (filtradas.length === 0) {
+          contenedor.innerHTML = `
+            <div class="vacio">
+              <span>🔎</span>
+              <h3>No encontramos resultados</h3>
+              <p>Prueba buscando otra palabra o código RFID.</p>
+            </div>
+          `;
+          return;
+        }
+
+        contenedor.innerHTML = filtradas.map((tarjeta, indice) => {
+          const imagen = urlMultimedia(tarjeta.imagen);
+          const audio = urlMultimedia(tarjeta.audio);
+
+          return `
+            <article class="tarjeta">
+
+              <!-- IMAGEN -->
+
+              <div class="imagen-tarjeta">
+
+                <span class="numero-tarjeta">
+                  TARJETA ${String(indice + 1).padStart(2, "0")}
+                </span>
+
+                ${
+                  imagen
+                    ? `
+                      <img
+                        src="${escapar(imagen)}"
+                        alt="${escapar(tarjeta.espanol)}"
+                        loading="lazy"
+                      />
+                    `
+                    : `<span class="sin-imagen">🌺</span>`
+                }
+
+              </div>
+
+              <!-- INFORMACIÓN -->
+
+              <div class="contenido-tarjeta">
+
+                <div class="codigo-contenedor">
+                  <span class="codigo-etiqueta">CÓDIGO RFID</span>
+                  <span class="codigo">${escapar(tarjeta.codigo)}</span>
+                </div>
+
+                <div>
+                  <h3 class="nombre-espanol">
+                    ${escapar(tarjeta.espanol)}
+                  </h3>
+                </div>
+
+                <div class="bloque-mazahua">
+                  <span class="etiqueta-mazahua">
+                    PALABRA EN MAZAHUA
+                  </span>
+
+                  <p class="nombre-mazahua">
+                    ${escapar(tarjeta.mazahua)}
+                  </p>
+                </div>
+
+                <div class="informacion-extra">
+                  <div class="dato-tarjeta">
+                    <span>📂 Categoría</span>
+                    <strong>${escapar(tarjeta.categoria || "General")}</strong>
+                  </div>
+
+                  <div class="dato-tarjeta">
+                    <span>🆔 Número</span>
+                    <strong>${escapar(tarjeta.id_tarjeta)}</strong>
+                  </div>
+                </div>
+
+                ${
+                  audio
+                    ? `
+                      <div class="bloque-audio">
+                        <span class="titulo-audio">🔊 ESCUCHAR PRONUNCIACIÓN</span>
+                        <div class="reproductor">
+                          <audio
+                            controls
+                            preload="none"
+                            src="${escapar(audio)}"
+                          ></audio>
+                        </div>
+                      </div>
+                    `
+                    : `
+                      <p class="sin-audio">
+                        ♪ Audio no disponible
+                      </p>
+                    `
+                }
+
+                <!-- BOTONES -->
+
+                <div class="acciones-tarjeta">
+
+                  <button
+                    class="editar"
+                    data-editar="${escapar(tarjeta.codigo)}"
+                    type="button"
+                  >
+                    ✏️ Editar
+                  </button>
+
+                  <button
+                    class="eliminar"
+                    data-eliminar="${escapar(tarjeta.codigo)}"
+                    type="button"
+                  >
+                    🗑 Eliminar
+                  </button>
+
+                </div>
+
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      /* ABRIR FORMULARIO */
+
+      function abrirFormulario(tarjeta?: Tarjeta) {
+        formulario.reset();
+
+        formularioContenedor.hidden = false;
+
+        if (tarjeta) {
+          campoModo.value = "editar";
+
+          tituloFormulario.textContent = "Editar tarjeta";
+          botonGuardar.textContent = "Guardar cambios";
+
+          campoCodigo.value = tarjeta.codigo;
+          campoCodigo.readOnly = true;
+
+          campoEspanol.value = tarjeta.espanol;
+          campoMazahua.value = tarjeta.mazahua;
+
+          campoDescripcion.value =
+            tarjeta.descripcion || "";
+
+          campoCategoria.value = String(
+            tarjeta.id_categoria ?? 1
+          );
+
+        } else {
+          campoModo.value = "crear";
+
+          tituloFormulario.textContent = "Registrar nueva tarjeta";
+          botonGuardar.textContent = "Guardar tarjeta";
+
+          campoCodigo.readOnly = false;
+          campoCategoria.value = "1";
+        }
+
+        formularioContenedor.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }
+
+      /* CERRAR FORMULARIO */
+
+      function cerrarFormulario() {
+        formularioContenedor.hidden = true;
+        formulario.reset();
+        campoCodigo.readOnly = false;
+        campoModo.value = "crear";
+      }
+
+      /* BOTONES DEL FORMULARIO */
+
+      document
+        .querySelector("#nueva-tarjeta")
+        ?.addEventListener("click", () => {
+          abrirFormulario();
+        });
+
+      document
+        .querySelector("#cerrar-formulario")
+        ?.addEventListener("click", cerrarFormulario);
+
+      document
+        .querySelector("#cancelar")
+        ?.addEventListener("click", cerrarFormulario);
+
+      /* BUSCADOR */
+
+      busqueda.addEventListener("input", mostrarTarjetas);
+
+      /* EDITAR Y ELIMINAR */
+
+      contenedor.addEventListener("click", async (evento) => {
+        const objetivo = evento.target as HTMLElement;
+
+        const botonEditar =
+          objetivo.closest("[data-editar]") as HTMLElement | null;
+
+        const botonEliminar =
+          objetivo.closest("[data-eliminar]") as HTMLElement | null;
+
+        if (botonEditar) {
+          const codigo = botonEditar.dataset.editar;
+
+          const tarjeta = tarjetas.find(
+            (item) => item.codigo === codigo
+          );
+
+          if (tarjeta) {
+            abrirFormulario(tarjeta);
+          }
+        }
+
+        if (botonEliminar) {
+          const codigo = botonEliminar.dataset.eliminar;
+
+          if (!codigo) return;
+
+          const tarjeta = tarjetas.find(
+            (item) => item.codigo === codigo
+          );
+
+          if (!tarjeta) return;
+
+          const confirmar = confirm(
+            `¿Deseas eliminar la tarjeta "${tarjeta.espanol}" (${codigo})?\n\nEsta acción no se puede deshacer.`
+          );
+
+          if (!confirmar) return;
+
+          try {
+            const respuesta = await fetch(
+              `${ENDPOINT}${encodeURIComponent(codigo)}`,
+              {
+                method: "DELETE"
+              }
+            );
+
+            if (!respuesta.ok) {
+              const detalle = await respuesta.text();
+
+              throw new Error(
+                detalle || `Error ${respuesta.status}`
+              );
+            }
+
+            mostrarMensaje(
+              "La tarjeta se eliminó correctamente.",
+              "correcto"
+            );
+
+            await cargarTarjetas();
+
+          } catch (error) {
+            console.error(error);
+
+            mostrarMensaje(
+              `No se pudo eliminar la tarjeta: ${
+                error instanceof Error
+                  ? error.message
+                  : "Error desconocido"
+              }`,
+              "error"
+            );
+          }
+        }
+      });
+
+      /* REGISTRAR Y ACTUALIZAR */
+
+      formulario.addEventListener("submit", async (evento) => {
+        evento.preventDefault();
+
+        const codigo = campoCodigo.value.trim().toUpperCase();
+
+        const datos = {
+          codigo,
+          espanol: campoEspanol.value.trim(),
+          mazahua: campoMazahua.value.trim(),
+          descripcion:
+            campoDescripcion.value.trim() || null,
+          id_categoria: Number(campoCategoria.value)
+        };
+
+        if (
+          !datos.codigo ||
+          !datos.espanol ||
+          !datos.mazahua ||
+          !datos.id_categoria
+        ) {
+          mostrarMensaje(
+            "Completa todos los campos obligatorios.",
+            "error"
+          );
+          return;
+        }
+
+        const editar = campoModo.value === "editar";
+
+        botonGuardar.disabled = true;
+        botonGuardar.textContent = "Guardando...";
+
+        try {
+          const respuesta = await fetch(
+            editar
+              ? `${ENDPOINT}${encodeURIComponent(codigo)}`
+              : ENDPOINT,
+            {
+              method: editar ? "PUT" : "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify(datos)
+            }
+          );
+
+          if (!respuesta.ok) {
+            const detalle = await respuesta.text();
+
+            throw new Error(
+              detalle || `Error ${respuesta.status}`
+            );
+          }
+
+          cerrarFormulario();
+
+          mostrarMensaje(
+            editar
+              ? "La tarjeta se actualizó correctamente."
+              : "La tarjeta se registró correctamente.",
+            "correcto"
+          );
+
+          await cargarTarjetas();
+
+        } catch (error) {
+          console.error(error);
+
+          mostrarMensaje(
+            `No se pudo guardar: ${
+              error instanceof Error
+                ? error.message
+                : "Error desconocido"
+            }`,
+            "error"
+          );
+
+        } finally {
+          botonGuardar.disabled = false;
+
+          botonGuardar.textContent =
+            campoModo.value === "editar"
+              ? "Guardar cambios"
+              : "Guardar tarjeta";
+        }
+      });
+
+      /* INICIAR CATÁLOGO */
+
+      cargarTarjetas();
+    </script>
+  </body>
+</html>
