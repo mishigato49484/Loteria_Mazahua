@@ -1,6 +1,4 @@
-
-$contenido = @'
-name: Deploy Astro to GitHub Pages
+﻿name: Deploy Astro to GitHub Pages
 
 on:
   push:
@@ -51,6 +49,3 @@ jobs:
       - name: Publicar en GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-'@
-
-Set-Content -Path ".github\workflows\deploy.yml" -Value $contenido -Encoding utf8
